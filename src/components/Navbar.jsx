@@ -1,13 +1,16 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
+import { ThemeContext } from "../context/ThemeContextProvider";
 import axios from "axios";
 import styled from "styled-components";
 
 const Button = styled.button`
   outline: none;
   border-style: none;
-  background-color:white;
-  padding:0.5rem;
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  margin: 0 0.5rem;
 `;
 
 const signIn = () => {
@@ -23,25 +26,25 @@ const signIn = () => {
   return axios(config);
 };
 
-const Nav = ({ children }) => {
-  return (
-    <div
-      style={{
-        backgroundColor: "black",
-        color: "white",
-        padding: "1rem",
-        display: "flex",
-        justifyContent: "flex-end",
-      }}
-    >
-      {children}
-    </div>
-  );
-};
-
 export default function Navbar() {
-  console.log("entered");
   const [isAuth, setAuth, authInfo, setAuthInfo] = useContext(AuthContext);
+  const [{ theme, themeData }, toggleTheme] = useContext(ThemeContext);
+
+  const Nav = ({ children }) => {
+    return (
+      <div
+        style={{
+          backgroundColor: themeData[theme].background,
+          color: themeData[theme].color,
+          padding: "1rem",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        {children}
+      </div>
+    );
+  };
 
   const handleSignIn = async () => {
     try {
@@ -66,6 +69,9 @@ export default function Navbar() {
       ) : (
         <Button onClick={handleSignIn}>SIGN IN</Button>
       )}
+      <Button onClick={toggleTheme}>
+        {theme === "light" ? "DARK MODE" : "LIGHT MODE"}
+      </Button>
     </Nav>
   );
 }
